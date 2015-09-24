@@ -13,6 +13,7 @@ import com.google.vrtoolkit.cardboard.Eye;
 import com.google.vrtoolkit.cardboard.HeadTransform;
 import com.google.vrtoolkit.cardboard.Viewport;
 
+import org.ncarneiro.marma.cube.Cube;
 import org.ncarneiro.marma.speech.OnSpeechListener;
 import org.ncarneiro.marma.speech.SpeechService;
 
@@ -30,6 +31,7 @@ public class MainActivity extends CardboardActivity implements CardboardView.Ste
     private static final String TAG = "VRCamMtMMainAc";
     private static final int GL_TEXTURE_EXTERNAL_OES = 0x8D65;
     private Camera camera;
+    Cube cube;
 
     private final String vertexShaderCode =
             "attribute vec4 position;" +
@@ -207,10 +209,10 @@ public class MainActivity extends CardboardActivity implements CardboardView.Ste
         mCamera = new float[16];
         mView = new float[16];
         mOverlayView = (CardboardOverlayView) findViewById(R.id.overlay);
-        //mOverlayView.show3DToast("Pull the magnet when you find an object.");
-        mOverlayView.show3DToast("Why camera, WHY?!");
-        setupSpeech();
+        mOverlayView.show3DToast("STARTING...");
         //TODO:
+        setupSpeech();
+        cube = new Cube(this);
     }
 
     @Override
@@ -262,6 +264,8 @@ public class MainActivity extends CardboardActivity implements CardboardView.Ste
 
         texture = createTexture();
         startCamera(texture);
+        //TODO: cube changes
+        cube.onSurfaceCreated(config);
     }
 
     /**
@@ -275,6 +279,8 @@ public class MainActivity extends CardboardActivity implements CardboardView.Ste
         GLES20.glClear(GLES20.GL_COLOR_BUFFER_BIT | GLES20.GL_DEPTH_BUFFER_BIT);
         surface.updateTexImage();
         surface.getTransformMatrix(mtx);
+        //TODO: cube changes
+        cube.onNewFrame(headTransform, mCamera);
     }
 
     @Override
@@ -330,13 +336,9 @@ public class MainActivity extends CardboardActivity implements CardboardView.Ste
 
         GLES20.glUseProgram(mProgram);
 
-        /*
-        GLES20.glActiveTexture(GL_TEXTURE_EXTERNAL_OES);
-        GLES20.glBindTexture(GL_TEXTURE_EXTERNAL_OES, texture);
-        */
+        //GLES20.glActiveTexture(GL_TEXTURE_EXTERNAL_OES);
         GLES20.glActiveTexture(GLES20.GL_TEXTURE0);
         GLES20.glBindTexture(GL_TEXTURE_EXTERNAL_OES, texture);
-
 
         mPositionHandle = GLES20.glGetAttribLocation(mProgram, "position");
         GLES20.glEnableVertexAttribArray(mPositionHandle);
@@ -358,6 +360,8 @@ public class MainActivity extends CardboardActivity implements CardboardView.Ste
         GLES20.glDisableVertexAttribArray(mTextureCoordHandle);
 
         Matrix.multiplyMM(mView, 0, transform.getEyeView(), 0, mCamera, 0);
+        //TODO: cube changes
+        cube.onDrawEye(transform, mView);
     }
 
     @Override
