@@ -36,7 +36,7 @@ public class Cube {
     // We keep the light always position just above the user.
     private static final float[] LIGHT_POS_IN_WORLD_SPACE = new float[] { 0.0f, 2.0f, 0.0f, 1.0f };
 
-    private int cubeProgram;
+    public int cubeProgram;
     private int cubePositionParam;
     private int cubeNormalParam;
     private int cubeColorParam;
@@ -140,6 +140,9 @@ public class Cube {
      */
     private int loadGLShader(int type, int resId) {
         String code = readRawTextFile(resId);
+        //
+        //Log.d("RETURN FROM readrawtext",code);
+        //
         int shader = GLES20.glCreateShader(type);
         GLES20.glShaderSource(shader, code);
         GLES20.glCompileShader(shader);
@@ -326,9 +329,10 @@ public class Cube {
      * @param eye The eye to render. Includes all required transformations.
      */
     public void onDrawEye(Eye eye, float[] view) {
+        /*
         GLES20.glEnable(GLES20.GL_DEPTH_TEST);
         GLES20.glClear(GLES20.GL_COLOR_BUFFER_BIT | GLES20.GL_DEPTH_BUFFER_BIT);
-
+        */
         checkGLError("colorParam");
 
         // Apply the eye transformation to the camera.

@@ -1,5 +1,6 @@
 package org.ncarneiro.marma;
 
+import android.app.Activity;
 import android.graphics.SurfaceTexture;
 import android.hardware.Camera;
 import android.opengl.GLES20;
@@ -211,7 +212,7 @@ public class MainActivity extends CardboardActivity implements CardboardView.Ste
         mOverlayView = (CardboardOverlayView) findViewById(R.id.overlay);
         mOverlayView.show3DToast("STARTING...");
         //TODO:
-        setupSpeech();
+        setupSpeech(this);
         cube = new Cube(this);
     }
 
@@ -332,6 +333,9 @@ public class MainActivity extends CardboardActivity implements CardboardView.Ste
     }
     */
     public void onDrawEye(Eye transform) {
+        //
+        GLES20.glEnable(GLES20.GL_DEPTH_TEST);
+        //
         GLES20.glClear(GLES20.GL_COLOR_BUFFER_BIT | GLES20.GL_DEPTH_BUFFER_BIT);
 
         GLES20.glUseProgram(mProgram);
@@ -362,6 +366,7 @@ public class MainActivity extends CardboardActivity implements CardboardView.Ste
         Matrix.multiplyMM(mView, 0, transform.getEyeView(), 0, mCamera, 0);
         //TODO: cube changes
         cube.onDrawEye(transform, mView);
+
     }
 
     @Override
@@ -370,7 +375,7 @@ public class MainActivity extends CardboardActivity implements CardboardView.Ste
     @Override
     public void onCardboardTrigger() {}
 
-    private void setupSpeech(){
+    private void setupSpeech(final Activity activity){
         SpeechService ss = new SpeechService(this, new OnSpeechListener() {
             @Override
             public void onStart() {}
@@ -378,7 +383,11 @@ public class MainActivity extends CardboardActivity implements CardboardView.Ste
             public void onError(int error) {}
             @Override
             public void onResult(String result) {
+                result = result.trim().toLowerCase();
                 mOverlayView.show3DToast(result);
+                if (result.equals("sair") || result.equals("fechar")) {
+                    activity.finish();
+                }
             }
             @Override
             public void onStop() {}
