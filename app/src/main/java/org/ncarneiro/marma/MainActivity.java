@@ -29,7 +29,7 @@ import javax.microedition.khronos.opengles.GL10;
 
 public class MainActivity extends CardboardActivity implements CardboardView.StereoRenderer, SurfaceTexture.OnFrameAvailableListener {
 
-    private static final String TAG = "VRCamMtMMainAc";
+    private static final String TAG = "ARCamMainAct";
     private static final int GL_TEXTURE_EXTERNAL_OES = 0x8D65;
     private Camera camera;
     Cube cube;
@@ -374,6 +374,27 @@ public class MainActivity extends CardboardActivity implements CardboardView.Ste
 
     @Override
     public void onCardboardTrigger() {}
+
+    @Override
+    protected void onDestroy() {
+        releaseCamera();
+        super.onDestroy();
+    }
+
+    @Override
+    public void finish() {
+        releaseCamera();
+        super.finish();
+    }
+
+    private void releaseCamera() {
+        if (camera!=null) {
+            camera.stopPreview();
+            camera.setPreviewCallback(null);
+            camera.release();
+            camera = null;
+        }
+    }
 
     private void setupSpeech(final Activity activity){
         SpeechService ss = new SpeechService(this, new OnSpeechListener() {

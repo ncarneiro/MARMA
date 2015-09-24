@@ -32,7 +32,6 @@ public class Cube {
     private static final float TIME_DELTA = 0.3f;
     private static final float Z_NEAR = 0.1f;
     private static final float Z_FAR = 100.0f;
-
     // We keep the light always position just above the user.
     private static final float[] LIGHT_POS_IN_WORLD_SPACE = new float[] { 0.0f, 2.0f, 0.0f, 1.0f };
 
@@ -44,6 +43,8 @@ public class Cube {
     private int cubeModelViewParam;
     private int cubeModelViewProjectionParam;
     private int cubeLightPosParam;
+
+    private float objectDistance = 12f;
 
     private float[] modelView;
     private float[] modelCube;
@@ -295,11 +296,12 @@ public class Cube {
         GLES20.glEnableVertexAttribArray(floorColorParam);
 
         checkGLError("Floor program params");
+        */
 
         // Object first appears directly in front of user.
         Matrix.setIdentityM(modelCube, 0);
         Matrix.translateM(modelCube, 0, 0, 0, -objectDistance);
-
+        /*
         Matrix.setIdentityM(modelFloor, 0);
         Matrix.translateM(modelFloor, 0, 0, -floorDepth, 0); // Floor appears below user.
         */
